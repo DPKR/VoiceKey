@@ -94,49 +94,49 @@ module.exports = function(app) {
 
     });
 
-    // app.get('/user/:id/collection', (req, res) => {
-    //     var userID = req.params.id;
-    //     console.log(userID);
-    //     if (!userID || userID.length == 0) {
-    //         res.status(400).json({'error':'id required in parameter'});
-    //         return;
-    //     }
-    //     User.find({'_id':userID}, (err, user) => {
-    //
-    //     })
-    // });
+    // Get ALL collections associated with this user
+    app.get('/user/:id/collection', (req, res) => {
+      // ensure the request provides a valid collectionName
+      var collectionName = req.query.name;
+      // if (!collectionName || collectionName.length == 0) {
+      //     res.status(400).json({'error':'collectionName required in body'});
+      //     return;
+      // }
+      // ensure the request provides a valid userID
+      var userID = req.params.id;
+      if (!userID || userID.length == 0) {
+          res.status(400).json({'error':'id required in parameter'});
+          return;
+      }
 
-    // Please Code Review Kumin
-    // app.get('/user/:id/collection/:name', (req, res) => {
-    //   // ensure the request provides a valid collectionName
-    //   var collectionName = req.body.name;
-    //   if (!collectionName || collectionName.length == 0) {
-    //       res.status(400).json({'error':'collectionName required in body'});
-    //       return;
-    //   }
-    //   // ensure the request provides a valid userID
-    //   var userID = req.param.id;
-    //   if (!userID || userID.length == 0) {
-    //       res.status(400).json({'error':'id required in parameter'});
-    //       return;
-    //   }
-    //
-    //   // Find user based upon the userID provided in the request.
-    //   Collection.findOne({'user':userID, 'name':collectionName}, (err, collection) => {
-    //       // There was an error finding the collection.
-    //       if (err) {
-    //           // Respond with Server Error, since ther was an error finding
-    //           // a collection from this query, and the JSON Object.
-    //           res.status(500).json(err);
-    //       } else if (collection) {
-    //           // The collection was found in the database.
-    //           res.status(200).json(collection);
-    //       } else {
-    //           // The collection was not found in the database
-    //           res.status(404).json({'Error':'No collection for specified user.'});
-    //       }
-    //   });
-    // });
+      User
+      .findOne({ 'Microsoft.id':userID })
+      .populate('collections')
+      .exec((err, user) => {
+        if (err) {
+            res.status(500).json(err);
+        } else {
+            var collectionList = user.collections;
+            if (!collectionName) {
+                if (!collectionList || collectionList.length == 0) {
+                    res.status(404).json( {'error':'User has no Collection list'} );
+                } else {
+                    res.status(200).json(collectionList);
+                }
+            } else {
+                var collection = collectionList.find((collection) => {
+                    return collection.name == collectionName;
+                });
+
+                if (!collection) {
+                    res.status(404).json( {'error':'Collection not found'} )
+                } else {
+                    res.status(200).json(collection);
+                }
+            }
+        }
+      });
+    });
 
     // Please Code Review Kumin
     app.post('/user/:id/collection', (req, res) => {
