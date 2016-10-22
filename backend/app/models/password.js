@@ -12,7 +12,8 @@ var passwordSchema = new Schema({
         type: String,
         required: true
     },
-    hash: {type: String, required: true}
+    hash: {type: String, required: true},
+    collection: {type: ObjectId, ref: 'Collection'}
 });
 
 mongoose.model('Password', passwordSchema);
