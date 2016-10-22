@@ -9,18 +9,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-require('./rxjs-operators');
-var AppComponent = (function () {
-    function AppComponent() {
+var NavBar = (function () {
+    function NavBar() {
     }
-    AppComponent = __decorate([
+    NavBar = __decorate([
         core_1.Component({
-            selector: 'my-app',
-            template: "\n  <nav-bar></nav-bar>\n  <home-page></home-page>\n  "
+            selector: 'nav-bar',
+            template: "\n  <nav class=\"#7e57c2 deep-purple lighten-1\">\n    <div class=\"nav-wrapper\">\n      <a href=\"#\" class=\"brand-logo\" style=\"padding-left: 1em\">Voice Key Auth</a>\n      <ul id=\"nav-mobile\" class=\"right hide-on-med-and-down\">\n        <li><a href=\"#\">Home</a></li>\n      </ul>\n    </div>\n  </nav>\n  "
         }), 
         __metadata('design:paramtypes', [])
-    ], AppComponent);
-    return AppComponent;
+    ], NavBar);
+    return NavBar;
 }());
-exports.AppComponent = AppComponent;
-//# sourceMappingURL=app.component.js.map
+exports.NavBar = NavBar;
+//# sourceMappingURL=navbar.js.map

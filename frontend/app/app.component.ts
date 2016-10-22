@@ -1,6 +1,13 @@
 import { Component } from '@angular/core';
+import './rxjs-operators';
+
 @Component({
   selector: 'my-app',
-  template: '<h1>My First Angular App</h1>'
+  template: `
+  <nav-bar></nav-bar>
+  <home-page></home-page>
+  `
 })
-export class AppComponent { }
+export class AppComponent {
+
+}
