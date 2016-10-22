@@ -32,11 +32,37 @@ export function(app) {
     });
 
     app.post('/user', (req, res) => {
-
-    });
-
-    app.put('/user', (req, res) => {
-
+        // Get userID from the body.
+        var userID = req.body.userID;
+        // Check if userID exists from the body.
+        if (!userID || userID.length == 0) {
+            res.status(400).json({'error':'userID required in body'});
+            return;
+        }
+        // Find the user based on the userID and create a new user if
+        // user doesn't exist.
+        User.findOne({'_id':userID}, (err, user) => {
+            // There was an error finding the user.
+            if (err) {
+                // Respond with Server Error, since ther was an error finding
+                // a user from this query, and the JSON Object.
+                res.status(500).json(err);
+            } else if (user) {
+                // The user was found in the database.
+                res.status(409).json({'error':'User already exists in database'});
+            } else {
+                var newUser = new User({
+                    _id: userID
+                });
+                newUser.save((err, user) => {
+                    if (err) {
+                        res.status(500).json(err);
+                    } else {
+                        res.status(201).json(user);
+                    }
+                });
+            }
+        });
     });
 
     app.delete('/user/:id', (req, res) => {
