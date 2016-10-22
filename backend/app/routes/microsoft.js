@@ -252,20 +252,21 @@ module.exports = function(app) {
     app.delete('/user/:id/collection', (req, res) => {
         var collectionName = req.body.name;
     });
-    //
-    // app.get('/user/:id/collection/:name/password', (req, res) => {
-    //
-    // });
-    //
-    // app.put('/user/:id/collection/:name/password', (req, res) => {
-    //
-    // });
-    //
-    // app.delete('/user/:id/collection/:name/password', (req, res) => {
-    //
-    // });
-    //
-    // app.post('/user/:id/collection/:name/password', (req, res) => {
-    //
-    // });
+
+    app.get('/user/:id/collection/:name/password', (req, res) => {
+
+    });
+
+    app.post('/user/:id/collection/:name/password', (req, res) => {
+
+    });
+
+    app.put('/user/:id/collection/:name/password', (req, res) => {
+
+    });
+
+    app.delete('/user/:id/collection/:name/password', (req, res) => {
+
+    });
+
 };
