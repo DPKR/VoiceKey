@@ -4,9 +4,8 @@ var mongoose = require('mongoose'),
     ObjectId = Schema.ObjectId;
 
 var userSchema = new Schema({
-    _id: {
-        type: String,
-        required: true
+    Microsoft: {
+        id: {type: String, required: true}
     },
     collections: [{ type: ObjectId, ref: 'Collection'}]
 });
