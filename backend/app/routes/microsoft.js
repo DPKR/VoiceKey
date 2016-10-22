@@ -92,7 +92,7 @@ module.exports = function(app) {
     });
 
     app.get('/user/:id/collection', (req, res) => {
-        var userID = req.param.id;
+        var userID = req.params.id;
         if (!userID || userID.length == 0) {
             res.status(400).json({'error':'id required in parameter'});
             return;
@@ -117,7 +117,7 @@ module.exports = function(app) {
           return;
       }
       // ensure the request provides a valid userID
-      var userID = req.param.id;
+      var userID = req.params.id;
       if (!userID || userID.length == 0) {
           res.status(400).json({'error':'id required in parameter'});
           return;
@@ -149,7 +149,7 @@ module.exports = function(app) {
             return;
         }
         // ensure the request provides a valid userID
-        var userID = req.param.id;
+        var userID = req.params.id;
         if (!userID || userID.length == 0) {
             res.status(400).json({'error':'id required in parameter'});
             return;
@@ -166,26 +166,27 @@ module.exports = function(app) {
                 res.status(409).json({'error':'Collection already exists in database'});
             } else {
                 // The collection was not found in the database
+                res.status(200).json('Success!');
                 var newCollection = new Collection({
                     user: userID,
                     name: collectionName
                 });
-                newCollection.save((err, collection) => {
-                    if (err) {
-                        res.status(500).json(err);
-                    } else {
-                        res.status(201).json(user);
-                    }
-                });
-                // Update corresponding user's collections list based on userID
-                user.findByIdAndUpdate(
-                    userID,
-                    {$push: {collections: newCollection}},
-                    {safe: true, upsert: true},
-                    function(err, model) {
-                      console.log(err);
-                    }
-                );
+                // newCollection.save((err, collection) => {
+                //     if (err) {
+                //         res.status(500).json(err);
+                //     } else {
+                //         res.status(201).json(user);
+                //     }
+                // });
+                // // Update corresponding user's collections list based on userID
+                // user.findByIdAndUpdate(
+                //     userID,
+                //     {$push: {collections: newCollection}},
+                //     {safe: true, upsert: true},
+                //     function(err, model) {
+                //       console.log(err);
+                //     }
+                // );
             }
         });
     });
