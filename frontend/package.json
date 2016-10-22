@@ -1,0 +1,14 @@
+{
+  "name": "voice-auth",
+  "version": "1.0.0",
+  "description": "application using voice key auth",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^1.4.1"
+  }
+}
