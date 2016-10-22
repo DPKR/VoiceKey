@@ -3,7 +3,7 @@ var User = mongoose.model('User');
 var Collection = mongoose.model('Collection');
 // var Password = mongoose.model('Password');
 
-export function(app) {
+module.exports = function(app) {
     app.get('/user', (req, res) => {
         // Get userID passed into the query.
         var userID = req.query.userID;
@@ -65,43 +65,92 @@ export function(app) {
         });
     });
 
-    app.delete('/user/:id', (req, res) => {
+    app.delete('/user', (req, res) => {
+        // make sure user id exists
+        var userID = req.body.userID;
+
+        if (!userID || userID.length == 0) {
+            res.status(400).json({'error':'userID required in body'});
+            return;
+        }
+
+
+        User.findOneAndRemove({'_id':userID}, (err, user, result) => {
+            if (err) {
+                res.status(500).json(err);
+            } else if (!user) {
+                res.status(404).json({'error':'User was not found'});
+            } else {
+                Collection.find({'user':userID}, (err, collection) => {
+                    console.log(collection);
+                    res.status(201).json(null);
+                });
+            }
+        });
+        //else good userID
 
     });
 
     app.get('/user/:id/collection', (req, res) => {
+        var userID = req.param.id;
+        if (!userID || userID.length == 0) {
+            res.status(400).json({'error':'id required in parameter'});
+            return;
+        }
+        Collection.find({'user':userID}, (err, collection) => {
+            if (err) {
+                res.status(500).json(err);
+            } else if (!collection) {
+                res.status(404).json({'Error':'No collection for specified user.'});
+            } else {
+                res.status(200).json(collection);
+            }
+        });
+    });
+
+    // app.get('/user/:id/collection/:name', (req, res) => {
+    //
+    // });
+
+    app.post('/user/:id/collection', (req, res) => {
+        var collectionName = req.body.name;
+        if (!collectionName || collectionName.length == 0) {
+            res.status(400).json({'error':'collectionName required in body'});
+            return;
+        }
 
     });
 
-    app.get('/user/:id/collection/:name', (req, res) => {
-
+    app.put('/user/:id/collection', (req, res) => {
+        var collectionName = req.body.name;
+        var newCollectionname = req.body.newName;
+        if (!collectionName || collectionName.length == 0) {
+            res.status(400).json({'error':'collectionName required in body'});
+            return;
+        }
+        if (!newCollectionname || newCollectionname.length == 0) {
+            res.status(400).json({'error':'newCollectionname required in body'});
+            return;
+        }
     });
 
-    app.post('/user/:id/collection/:name' (req, res) => {
-
+    app.delete('/user/:id/collection', (req, res) => {
+        var collectionName = req.body.name;
     });
-
-    app.put('/user/:id/collection/:name', (req, res) => {
-
-    });
-
-    app.delete('/user/:id/collection/:name', (req, res) => {
-
-    });
-
-    app.get('/user/:id/collection/:name/password', (req, res) => {
-
-    });
-
-    app.put('/user/:id/collection/:name/password', (req, res) => {
-
-    });
-
-    app.delete('/user/:id/collection/:name/password', (req, res) => {
-
-    });
-
-    app.post('/user/:id/collection/:name/password', (req, res) => {
-
-    });
+    //
+    // app.get('/user/:id/collection/:name/password', (req, res) => {
+    //
+    // });
+    //
+    // app.put('/user/:id/collection/:name/password', (req, res) => {
+    //
+    // });
+    //
+    // app.delete('/user/:id/collection/:name/password', (req, res) => {
+    //
+    // });
+    //
+    // app.post('/user/:id/collection/:name/password', (req, res) => {
+    //
+    // });
 };
