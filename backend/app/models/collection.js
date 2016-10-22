@@ -5,7 +5,8 @@ var mongoose = require('mongoose'),
 
 var collectionSchema = new Schema({
     user: { type: ObjectId, ref: 'User', required: true },
-    name: { type: String, required: true }
+    name: { type: String, required: true },
+    password: [{ type: ObjectId, ref: 'Password'}]
 });
 
 mongoose.model('Collection', collectionSchema);
