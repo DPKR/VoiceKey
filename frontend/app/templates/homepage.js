@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var ajaxUtil_service_1 = require('./ajaxUtil.service');
+require('./../../recorder.js');
 var HomePage = (function () {
     function HomePage(ajaxUtil) {
         this.ajaxUtil = ajaxUtil;
@@ -17,12 +18,14 @@ var HomePage = (function () {
     HomePage.prototype.getNewUserKey = function () {
         var _this = this;
         this.ajaxUtil.getNewUser().subscribe(function (identificationProfileId) { return _this.userKey = identificationProfileId; });
+    };
+    HomePage.prototype.showUserKey = function () {
         console.log(this.userKey);
     };
     HomePage = __decorate([
         core_1.Component({
             selector: 'home-page',
-            template: "\n    <div class=\"container #7e57c2 deep-purple lighten-1\">\n      <button type=\"button\" (click)=\"getNewUserKey()\">Test</button>\n      <p> {{userKey}} </p>\n    </div>\n  ",
+            template: "\n    <div class=\"container #7e57c2 deep-purple lighten-1\">\n      <button type=\"button\" (click)=\"getNewUserKey()\">Test</button>\n      <button type=\"button\" (click)=\"showUserKey()\"> show</button>\n      <button onclick=\"startRecording(this);\">record</button>\n      <button onclick=\"stopRecording(this);\" disabled>stop</button>\n    </div>\n  ",
             providers: [ajaxUtil_service_1.AjaxUtil]
         }), 
         __metadata('design:paramtypes', [ajaxUtil_service_1.AjaxUtil])

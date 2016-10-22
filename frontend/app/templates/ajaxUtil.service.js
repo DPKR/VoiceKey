@@ -14,13 +14,7 @@ var Observable_1 = require('rxjs/Observable');
 var AjaxUtil = (function () {
     function AjaxUtil(http) {
         this.http = http;
-        this.heroesUrl = 'app/heroes'; // URL to web API
     }
-    AjaxUtil.prototype.getHeroes = function () {
-        return this.http.get(this.heroesUrl)
-            .map(this.extractData)
-            .catch(this.handleError);
-    };
     AjaxUtil.prototype.extractData = function (res) {
         var body = res.json();
         return body || {};

@@ -6,14 +6,8 @@ import { Observable }     from 'rxjs/Observable';
 @Injectable()
 export class AjaxUtil {
 
-  private heroesUrl = 'app/heroes';  // URL to web API
   constructor (private http: Http) {}
-  getHeroes (): Observable<HomePage[]> {
-    return this.http.get(this.heroesUrl)
-                    .map(this.extractData)
-                    .catch(this.handleError);
-  }
-
+  
   private extractData(res: Response) {
     let body = res.json();
     return body || { };
