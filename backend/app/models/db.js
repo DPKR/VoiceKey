@@ -1,7 +1,7 @@
 'use strict';
 var mongoose = require('mongoose');
 // Database connection string
-var dbURI = 'mongodb://localhost/chat';
+var dbURI = 'mongodb://localhost/voice';
 // Connect to the given connection string
 mongoose.connect(dbURI);
 // notifies console on db connection and disconnection
