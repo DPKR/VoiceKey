@@ -108,17 +108,86 @@ module.exports = function(app) {
         });
     });
 
-    // app.get('/user/:id/collection/:name', (req, res) => {
-    //
-    // });
+    // Please Code Review Kumin
+    app.get('/user/:id/collection/:name', (req, res) => {
+      // ensure the request provides a valid collectionName
+      var collectionName = req.body.name;
+      if (!collectionName || collectionName.length == 0) {
+          res.status(400).json({'error':'collectionName required in body'});
+          return;
+      }
+      // ensure the request provides a valid userID
+      var userID = req.param.id;
+      if (!userID || userID.length == 0) {
+          res.status(400).json({'error':'id required in parameter'});
+          return;
+      }
 
+      // Find user based upon the userID provided in the request.
+      Collection.findOne({'user':userID, 'name':collectionName}, (err, collection) => {
+          // There was an error finding the collection.
+          if (err) {
+              // Respond with Server Error, since ther was an error finding
+              // a collection from this query, and the JSON Object.
+              res.status(500).json(err);
+          } else if (collection) {
+              // The collection was found in the database.
+              res.status(200).json(collection);
+          } else {
+              // The collection was not found in the database
+              res.status(404).json({'Error':'No collection for specified user.'});
+          }
+      });
+    });
+
+    // Please Code Review Kumin
     app.post('/user/:id/collection', (req, res) => {
+        // ensure the request provides a valid collectionName
         var collectionName = req.body.name;
         if (!collectionName || collectionName.length == 0) {
             res.status(400).json({'error':'collectionName required in body'});
             return;
         }
-
+        // ensure the request provides a valid userID
+        var userID = req.param.id;
+        if (!userID || userID.length == 0) {
+            res.status(400).json({'error':'id required in parameter'});
+            return;
+        }
+        // Find user based upon the userID provided in the request.
+        Collection.findOne({'user':userID, 'name':collectionName}, (err, collection) => {
+            // There was an error finding the collection.
+            if (err) {
+                // Respond with Server Error, since ther was an error finding
+                // a collection from this query, and the JSON Object.
+                res.status(500).json(err);
+            } else if (collection) {
+                // The collection was found in the database.
+                res.status(409).json({'error':'Collection already exists in database'});
+            } else {
+                // The collection was not found in the database
+                var newCollection = new Collection({
+                    user: userID,
+                    name: collectionName
+                });
+                newCollection.save((err, collection) => {
+                    if (err) {
+                        res.status(500).json(err);
+                    } else {
+                        res.status(201).json(user);
+                    }
+                });
+                // Update corresponding user's collections list based on userID
+                user.findByIdAndUpdate(
+                    userID,
+                    {$push: {collections: newCollection}},
+                    {safe: true, upsert: true},
+                    function(err, model) {
+                      console.log(err);
+                    }
+                );
+            }
+        });
     });
 
     app.put('/user/:id/collection', (req, res) => {
