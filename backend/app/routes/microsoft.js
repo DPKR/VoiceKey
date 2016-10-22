@@ -193,6 +193,8 @@ module.exports = function(app) {
     app.put('/user/:id/collection', (req, res) => {
         var collectionName = req.body.name;
         var newCollectionname = req.body.newName;
+        var userID = req.params.id;
+
         if (!collectionName || collectionName.length == 0) {
             res.status(400).json({'error':'collectionName required in body'});
             return;
@@ -201,6 +203,50 @@ module.exports = function(app) {
             res.status(400).json({'error':'newCollectionname required in body'});
             return;
         }
+        if(!userID || userID.length == 0) {
+            res.status(400).json({'error':'userID required in params'});
+            return;
+        }
+
+        User
+        .findOne({ 'Microsoft.id':userID })
+        .populate('collections')
+        .exec((err, user) => {
+            // i have THAT ONE user (user)
+            // THAT user's collections list is populated (user.collections)
+            if (err) {
+                res.status(500).json( err );
+            } else if(!user) {
+                res.status(404).json( {'error':'User not found'} );
+            } else {
+                // i want to grab that collection with collectionName
+                var collection = user.collections.find((collection) => {
+                    return collection.name == collectionName;
+                });
+
+                if (!collection) {
+                    res.status(404).json( {'error':'User not found'} );
+                } else {
+                    // did i assign properly?
+                    // i want to update that collection
+                    collection.name = newCollectionname;
+                    // i want to save that collection
+                    collection.save((err, collection) => {
+                        if (err) {
+                            res.status(500).json(err);
+                        } else {
+                          user.save((err, user) => {
+                              if (err) {
+                                  res.status(500).json(err);
+                              } else {
+                                  res.status(201).json(collection);
+                              }
+                          });
+                        }
+                    });
+                }
+            }
+        });
     });
 
     app.delete('/user/:id/collection', (req, res) => {
