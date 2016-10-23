@@ -258,9 +258,13 @@ router.put('/user/collection', (req, res) => {
                 var collection = user.collections.find((collection) => {
                     return collection.name == collectionName;
                 });
-
+                var otherCollection = user.collections.find((collection) => {
+                    return collection.name == newCollectionName;
+                });
                 if (!collection) {
                     res.status(404).json({'error':'Collection not found'});
+                } else if (otherCollection) {
+                    res.status(409).json({'error':'Collection name already exists'});
                 } else {
                     collection.name = newCollectionName;
                     collection.save((err, collection) => {
