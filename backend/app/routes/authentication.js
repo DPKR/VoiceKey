@@ -242,7 +242,40 @@ router.put('/user/collection', (req, res) => {
         var collectionName = req.body.name;
         var newCollectionName = req.body.newName;
         var userID = req.decoded._doc.Microsoft.id;
+        if (!collectionName || collectionName.length == 0) {
+            res.status(400).json({'error':'collectionName required in body'});
+            return;
+        }
+        if (!newCollectionname || newCollectionname.length == 0) {
+            res.status(400).json({'error':'newCollectionname required in body'});
+            return;
+        }
+        User
+        .findOne({'Microsoft.id':userID})
+        .populate('collections')
+        .exec((err, user) => {
+            if (err) {
+                res.status(500).json(err);
+            } else {
+                var collection = user.collections.find((collection) => {
+                    return collection.name == collectionName;
+                });
+
+                if (!collection) {
+                    res.status(404).json({'error':'Collection not found'});
+                } else {
+                    collection.name = newCollectionName;
+                    collection.save((err, collection) => {
+                        if (err) {
+                            res.status(500).json(err);
+                        } else {
+                            res.status(201).json(collection);
+                        }
+                    });
+                }
+            }
+        });
     }
-})
+});
 
 module.exports = router;
