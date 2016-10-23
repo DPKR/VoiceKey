@@ -7,7 +7,11 @@ var bodyParser = require('body-parser');
 
 var app = express();
 
+// Configuration stuff
+var port = require('./SECRET/config').port || 8080;
 require('./app/models/db.js');
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -21,6 +25,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 require('./app/routes/microsoft')(app);
+
+var authentication = require('./app/routes/authentication');
+
+app.use('/api/v1/', authentication);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -52,5 +60,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
+app.listen(port);
 
+console.log('App listening on localhost:'+port);
 module.exports = app;
