@@ -22,12 +22,14 @@
   <!-- 3. Display the application -->
   <body>
     <my-app>Loading...</my-app>
-  
-  <h2>Recordings</h2>
-  <ul id="recordingslist"></ul>
-  
-  <h2>Log</h2>
-  <pre id="log"></pre>
+  <div class="container">
+    <h2>Recordings</h2>
+
+    
+    <h2>Log</h2>
+    <pre id="log"></pre>
+  </div>
+
 
   <script>
   function __log(e, data) {
@@ -61,7 +63,7 @@
     button.disabled = true;
     button.previousElementSibling.disabled = false;
     __log('Stopped recording.');
-    
+    console.log(recorder);
     // create WAV download link using audio data blob
     createDownloadLink();
     
@@ -107,5 +109,6 @@
   </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
     <script src="./recorder.js"></script>
+    <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
   </body>
 </html>

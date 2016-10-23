@@ -27,6 +27,17 @@ var AjaxUtil = (function () {
         var options = new http_1.RequestOptions({ headers: headers });
         return this.http.post('https://api.projectoxford.ai/spid/v1.0/identificationProfiles', body, options).map(this.extractData).catch(this.handleError);
     };
+    AjaxUtil.prototype.getAllUser = function () {
+        var headers = new http_1.Headers({ 'Ocp-Apim-Subscription-Key': '0453bf1784da47beae7889ee3b5d5760' });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.get('https://api.projectoxford.ai/spid/v1.0/verificationProfiles', options).map(this.extractData).catch(this.handleError);
+    };
+    AjaxUtil.prototype.registerUser = function (key) {
+        var body = "verificationProfileId=" + key;
+        var headers = new http_1.Headers({ 'Ocp-Apim-Subscription-Key': '0453bf1784da47beae7889ee3b5d5760' });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.post('https://api.projectoxford.ai/spid/v1.0/verificationProfiles/{verificationProfileId}/enroll', body, options).map(this.extractData).catch(this.handleError);
+    };
     AjaxUtil.prototype.handleError = function (error) {
         // In a real world app, we might use a remote logging infrastructure
         // We'd also dig deeper into the error to get a better message

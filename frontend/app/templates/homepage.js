@@ -16,16 +16,25 @@ var HomePage = (function () {
         this.ajaxUtil = ajaxUtil;
     }
     HomePage.prototype.getNewUserKey = function () {
-        var _this = this;
-        this.ajaxUtil.getNewUser().subscribe(function (identificationProfileId) { return _this.userKey = identificationProfileId; });
+        if (!this.userKey) {
+        }
+        else {
+        }
     };
     HomePage.prototype.showUserKey = function () {
-        console.log(this.userKey);
+        var _this = this;
+        this.ajaxUtil.getAllUser().subscribe(function (identificationProfileId) { return _this.profileList = identificationProfileId; });
+    };
+    HomePage.prototype.registerUser = function () {
+        this.ajaxUtil.registerUser(this.userKey).subscribe();
+    };
+    HomePage.prototype.test = function () {
+        console.log(this.profileList);
     };
     HomePage = __decorate([
         core_1.Component({
             selector: 'home-page',
-            template: "\n    <div class=\"container #7e57c2 deep-purple lighten-1\">\n      <button type=\"button\" (click)=\"getNewUserKey()\">Test</button>\n      <button type=\"button\" (click)=\"showUserKey()\"> show</button>\n      <button onclick=\"startRecording(this);\">record</button>\n      <button onclick=\"stopRecording(this);\" disabled>stop</button>\n    </div>\n  ",
+            template: "\n    <div class=\"container #7e57c2 deep-purple lighten-1\">\n      <button type=\"button\" (click)=\"test()\">Test</button>\n      <button type=\"button\" (click)=\"showUserKey()\"> show</button>\n      <button onclick=\"startRecording(this);\">record</button>\n      <button (click)=\"getNewUserKey()\" onclick=\"stopRecording(this);\" disabled>stop</button>\n      <ul id=\"recordingslist\"></ul>\n    </div>\n  ",
             providers: [ajaxUtil_service_1.AjaxUtil]
         }), 
         __metadata('design:paramtypes', [ajaxUtil_service_1.AjaxUtil])

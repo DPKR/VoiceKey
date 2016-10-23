@@ -7,7 +7,7 @@ import { Observable }     from 'rxjs/Observable';
 export class AjaxUtil {
 
   constructor (private http: Http) {}
-  
+
   private extractData(res: Response) {
     let body = res.json();
     return body || { };
@@ -20,6 +20,19 @@ export class AjaxUtil {
     let headers = new Headers({ 'Ocp-Apim-Subscription-Key': '0453bf1784da47beae7889ee3b5d5760' });
     let options = new RequestOptions({ headers: headers });
     return this.http.post('https://api.projectoxford.ai/spid/v1.0/identificationProfiles',body, options).map(this.extractData).catch(this.handleError);
+  }
+
+  getAllUser(): Observable<any> {
+    let headers = new Headers({ 'Ocp-Apim-Subscription-Key': '0453bf1784da47beae7889ee3b5d5760' });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.get('https://api.projectoxford.ai/spid/v1.0/verificationProfiles', options).map(this.extractData).catch(this.handleError);
+  }
+
+  registerUser(key : string): Observable<any> {
+    let body = "verificationProfileId=" + key;
+    let headers = new Headers({ 'Ocp-Apim-Subscription-Key': '0453bf1784da47beae7889ee3b5d5760' });
+    let options = new RequestOptions({ headers: headers })
+    return this.http.post('https://api.projectoxford.ai/spid/v1.0/verificationProfiles/{verificationProfileId}/enroll',body,options).map(this.extractData).catch(this.handleError);
   }
 
   private handleError (error: any) {
