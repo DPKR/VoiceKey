@@ -50,7 +50,7 @@ router.post('/authenticate', (req, res) => {
                 res.status(401).json({'error': 'User not authorized'});
             } else {
                 var token = jwt.sign(user, SECRET, {
-                    expiresIn: 60
+                    expiresIn: 1440
                 });
                 res.status(201).json({'token': token});
             }
@@ -103,7 +103,7 @@ router.post('/user', (req, res) => {
                     res.status(500).json(err);
                 } else {
                     var token = jwt.sign(user, SECRET, {
-                        expiresIn: 60
+                        expiresIn: 1440
                     });
                     res.status(201).json({'token': token});
                 }
@@ -114,13 +114,11 @@ router.post('/user', (req, res) => {
 
 router.use((req, res, next) => {
     var token = req.body.token || req.query.token || req.headers['x-access-token'];
-    console.log(token);
     if (!token) {
         res.status(401).json({'error':'Token required'});
         return;
     } else {
         jwt.verify(token, SECRET, (err, decoded) => {
-            console.log(decoded);
             if (err) {
                 return res.status(500).json({'error': 'Failed to Authenticate Token'});
             } else {
@@ -239,15 +237,15 @@ router.post('/user/collection', (req, res) => {
 
 router.put('/user/collection', (req, res) => {
     if (req.decoded) {
-        var collectionName = req.body.name;
-        var newCollectionName = req.body.newName;
+        var collectionName = req.body.collectionName;
+        var newCollectionName = req.body.newCollectionName;
         var userID = req.decoded._doc.Microsoft.id;
         if (!collectionName || collectionName.length == 0) {
             res.status(400).json({'error':'collectionName required in body'});
             return;
         }
-        if (!newCollectionname || newCollectionname.length == 0) {
-            res.status(400).json({'error':'newCollectionname required in body'});
+        if (!newCollectionName || newCollectionName.length == 0) {
+            res.status(400).json({'error':'newCollectionName required in body'});
             return;
         }
         User
@@ -277,5 +275,7 @@ router.put('/user/collection', (req, res) => {
         });
     }
 });
+
+
 
 module.exports = router;
