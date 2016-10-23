@@ -20,21 +20,19 @@ export class AjaxUtil {
     return this.http.post('http://localhost:8000/api/v1/user', body, options).map(this.extractData).catch(this.handleError);
   }
 
-  createNewUser(): Observable<any> {
-    let body = {
-      "locale":"en-us",
-    };
-    let headers = new Headers({ 'Ocp-Apim-Subscription-Key': '0453bf1784da47beae7889ee3b5d5760' });
+  login(user: string, password: string, MId : string) : Observable<any> {
+    let body = "userID=" + MId + "&username=" + user + "&password=" + password;
+    let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded'});
     let options = new RequestOptions({ headers: headers });
-    return this.http.post('https://api.projectoxford.ai/spid/v1.0/identificationProfiles',body, options).map(this.extractData).catch(this.handleError);
+    return this.http.post('http://localhost:8000/api/v1/authenticate', body, options).map(this.extractData).catch(this.handleError);
   }
 
-  registerUser(key : string): Observable<any> {
-    let body = "verificationProfileId=" + key;
-    let headers = new Headers({ 'Ocp-Apim-Subscription-Key': '0453bf1784da47beae7889ee3b5d5760' });
-    let options = new RequestOptions({ headers: headers })
-    return this.http.post('https://api.projectoxford.ai/spid/v1.0/verificationProfiles/{verificationProfileId}/enroll',body,options).map(this.extractData).catch(this.handleError);
-  }
+  // getCollection(user: string, password: string, MId: string, token: string ) : Observable<any> {
+  //   let body = "userID=" + MId + "&username=" + user + "&password=" + password;
+  //   let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded', 'x-access-token' : token});
+  //   let options = new RequestOptions({ headers: headers });
+  //   return this.http.get('http://localhost:8000/api/v1/user/collections', body, options).map(this.extractData).catch(this.handleError);
+  // }
 
   private handleError (error: any) {
     // In a real world app, we might use a remote logging infrastructure

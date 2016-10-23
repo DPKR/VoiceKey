@@ -6,6 +6,7 @@ import { HomePage } from './templates/homepage';
 import { NavBar } from './templates/navbar';
 import { FooterBar } from './templates/footerbar';
 
+
 @NgModule({
   imports:      [ 
   	BrowserModule,
