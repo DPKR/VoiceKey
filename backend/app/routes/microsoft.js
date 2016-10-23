@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var Collection = mongoose.model('Collection');
-// var Password = mongoose.model('Password');
+var Password = mongoose.model('Password');
 
 module.exports = function(app) {
     app.get('/user', (req, res) => {
@@ -286,29 +286,92 @@ module.exports = function(app) {
                   res.status(404).json( {'error':'User has no specified Collection'} );
                } else {
                   // RETURN STATUS 201
-                  if (!collection.password || collection.password == 0) {
+                  if (!collection.passwords || collection.passwords == 0) {
                       res.status(404).json( {'error':'password(s) not found'} );
                   } else {
-                      res.status(200).json(collection.password);
+                      res.status(200).json(collection.passwords);
                   }
                }
             }
         });
     });
 
-    // app.post('/user/:id/collection/:name/password', (req, res) => {
-    //     var userID = req.params.id;
-    //     var collectionName = req.params.name;
-    //
-    //     if (!userID || userID == 0) {
-    //         res.status(500).json( {'error':'uresID required in body'} );
-    //     }
-    //     if (!collectionName || collectionName == 0) {
-    //         res.status(500).json( {'error':'collectionName required in body'} );
-    //     }
-    //
-    //     //
-    // });
+    // This function is still adding passwords when the hashcode should conflict
+    app.post('/user/:id/collection/:name/password', (req, res) => {
+        var userID = req.params.id;
+        var collectionName = req.params.name;
+        var user = req.body.username;
+        var hashCode = req.body.hash;
+
+        if (!userID || userID == 0) {
+            res.status(500).json( {'error':'userID required in body'} );
+            return;
+        }
+        if (!collectionName || collectionName == 0) {
+            res.status(500).json( {'error':'collectionName required in body'} );
+            return;
+        }
+        if (!user || user == 0) {
+            res.status(500).json( {'error':'username required in body'} );
+            return;
+        }
+        if (!hashCode || hashCode == 0) {
+            res.status(500).json( {'error':'hash required in body'} );
+            return;
+        }
+        // I WANT SPECIFIED USER GIVEN USERID
+        User
+        .findOne( {'Microsoft.id':userID} )
+        .populate('collections')
+        .exec((err, user) => {
+            // I WANT TO GET SPECIFIED COLLECTION GIVEN COLLECTIONNAME
+            if (err) {
+                res.status(500).json(err);
+            } else if (!user) {
+                res.status(404).json( {'error':'User not found'} );
+            } else {
+              var collection = user.collections.find((collection) => {
+                  return collection.name == collectionName;
+              });
+
+              if (!collection || collection.length == 0) {
+                  res.status(404).json( {'error':'Collection not found'} );
+              } else {
+                  var password = collection.passwords.find((password) => {
+                      return password.hash == hashCode;
+                  });
+
+                  if (!password) {
+                      var newPassword = new Password({
+                          'username': user,
+                          'hash': hashCode,
+                          'collections': collection._id
+                      });
+                      collection.passwords.push(newPassword._id);
+                      newPassword.save((err, pass) => {
+                          if (err) {
+                              res.status(500).json(err);
+                          } else {
+                              //res.status(201).json(pass);
+                              collection.save((err, collection) => {
+                                  if (err) {
+                                      res.status(500).json(err);
+                                  } else {
+                                      res.status(201).json(collection);
+                                  }
+                              });
+                          }
+                      });
+                  } else {
+                      res.status().json( {'error':'Password already exists in database'} );
+                  }
+              }
+            }
+        });
+
+        // I WANT TO CREATE NEW PASSWORD OBJECT
+        // I WANT TO ADD PASSWORD OBJECT TO COLLECTION AND UPDATE BOTH
+    });
 
     app.put('/user/:id/collection/:name/password', (req, res) => {
     });
