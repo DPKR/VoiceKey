@@ -22,14 +22,6 @@
   <!-- 3. Display the application -->
   <body>
     <my-app>Loading...</my-app>
-  <div class="container">
-    <h2>Recordings</h2>
-
-    
-    <h2>Log</h2>
-    <pre id="log"></pre>
-  </div>
-
 
   <script>
   function __log(e, data) {
@@ -83,29 +75,31 @@
       hf.download = new Date().toISOString() + '.wav';
       hf.innerHTML = hf.download;
 
-      var fd = new FormData();
-      
-      fd.append('fname', new Date().toISOString() + '.wav');
-      fd.append('data', blob);
-      $.ajax({
-            url: "https://api.projectoxford.ai/spid/v1.0/identificationProfiles/{identificationProfileId}/enroll?" + $.param(params),
-            beforeSend: function(xhrObj){
-                // Request headers
-                xhrObj.setRequestHeader("Content-Type","application/octet-stream");
-                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","0453bf1784da47beae7889ee3b5d5760");
-            },
-            type: "POST",
-            // Request body
-            data: {},
-            processData: false,
-            contentType: false
-        })
-        .done(function(data) {
-            alert("success");
-        })
-        .fail(function() {
-            alert("error");
-        });
+      // var fd = new FormData();
+      // var params = {
+      //   identificationProfileId:"a81a59bb-6857-46ba-a635-04e11fa5ed00",
+      // };
+      // fd.append('fname', new Date().toISOString() + '.wav');
+      // fd.append('data', blob);
+      // $.ajax({
+      //       url: "https://api.projectoxford.ai/spid/v1.0/identificationProfiles/{identificationProfileId}/enroll?" + $.param(params),
+      //       beforeSend: function(xhrObj){
+      //           // Request headers
+      //           xhrObj.setRequestHeader("Content-Type","application/octet-stream");
+      //           xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","0453bf1784da47beae7889ee3b5d5760");
+      //       },
+      //       type: "POST",
+      //       // Request body
+      //       data: {body: fd},
+      //       processData: false,
+      //       contentType: false
+      //   })
+      //   .done(function(data) {
+      //       alert("success");
+      //   })
+      //   .fail(function() {
+      //       alert("error");
+      //   });
 
 
       li.appendChild(au);

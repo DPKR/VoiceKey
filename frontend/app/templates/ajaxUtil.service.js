@@ -19,7 +19,13 @@ var AjaxUtil = (function () {
         var body = res.json();
         return body || {};
     };
-    AjaxUtil.prototype.getNewUser = function () {
+    AjaxUtil.prototype.saveNewUser = function (user, password, MId) {
+        var body = "userID=" + MId + "&username=" + user + "&password=" + password;
+        var headers = new http_1.Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this.http.post('http://localhost:8000/api/v1/user', body, options).map(this.extractData).catch(this.handleError);
+    };
+    AjaxUtil.prototype.createNewUser = function () {
         var body = {
             "locale": "en-us",
         };
