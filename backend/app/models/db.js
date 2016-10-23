@@ -35,4 +35,4 @@ process.on('SIGINT', function() {
 
 require('./user');
 require('./collection');
-// require('./password');
+require('./password');
