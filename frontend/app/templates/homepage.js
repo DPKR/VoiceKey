@@ -29,7 +29,6 @@ var HomePage = (function () {
         this.ajaxUtil.registerUser(this.userKey).subscribe();
     };
     HomePage.prototype.test = function () {
-        console.log(this.profileList);
     };
     HomePage = __decorate([
         core_1.Component({
