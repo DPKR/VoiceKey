@@ -36,15 +36,6 @@ export class AjaxUtil {
     return this.http.post('https://api.projectoxford.ai/spid/v1.0/verificationProfiles/{verificationProfileId}/enroll',body,options).map(this.extractData).catch(this.handleError);
   }
 
-  getListOfSaying() : Observable<any> {
-    let body = {
-      "locale":"en-US",
-    };
-    let headers = new Headers({ 'Ocp-Apim-Subscription-Key': '0453bf1784da47beae7889ee3b5d5760' });
-    let options = new RequestOptions({ headers: headers });
-    return this.http.get('https://api.projectoxford.ai/spid/v1.0/verificationPhrases?locale={locale}',body,options).map(this.extractData).catch(this.handleError);
-  }
-
   private handleError (error: any) {
     // In a real world app, we might use a remote logging infrastructure
     // We'd also dig deeper into the error to get a better message
