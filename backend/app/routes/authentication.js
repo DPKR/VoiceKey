@@ -4,7 +4,7 @@ var jwt = require('jsonwebtoken');
 var router = express.Router();
 var User = mongoose.model('User');
 var Collection = mongoose.model('Collection');
-// var Password = mongoose.model('Password');
+var Password = mongoose.model('Password');
 var SECRET = require('../../SECRET/config').secret;
 
 router.get('/setup', (req, res) => {
@@ -323,23 +323,28 @@ router.get('/user/collection/:name/password', (req, res) => {
     }
 });
 
-router.post('/user/collections/:name/password', (req, res) => {
+router.post('/user/collection/:name/password', (req, res) => {
     if (req.decoded) {
         var userID = req.decoded._doc.Microsoft.id;
         var collectionName = req.params.name;
         var username = req.body.username;
         var hash = req.body.hash;
+        var description = req.body.description;
 
         if (!collectionName || collectionName.length == 0) {
-            res.status(400).json( {'error':'collectionName required in body'} );
+            res.status(400).json( {'error':'collectionName required in body'});
             return;
         }
         if (!username || username.length == 0) {
-            res.status(400).json( {'error':'username required in body'} );
+            res.status(400).json( {'error':'username required in body'});
             return;
         }
-        if (!hashCode || hashCode.length == 0) {
-            res.status(400).json( {'error':'hash required in body'} );
+        if (!hash || hash.length == 0) {
+            res.status(400).json( {'error':'hash required in body'});
+            return;
+        }
+        if (!description || description.length == 0) {
+            res.status(400).json( {'error':'description required in body'});
             return;
         }
 
@@ -363,7 +368,33 @@ router.post('/user/collections/:name/password', (req, res) => {
                         if (err) {
                             res.status(500).json(err);
                         } else {
-
+                            var password = collection.passwords.find((password) => {
+                                return password.description == description && password.hash == hash && password.username == username;
+                            });
+                            if (!password) {
+                                var newPassword = new Password({
+                                    'username': username,
+                                    'hash': hash,
+                                    'description': description,
+                                    'collections': collection._id
+                                });
+                                newPassword.save((err, pass) => {
+                                    if (err) {
+                                        res.status(500).json(err);
+                                    } else {
+                                        collection.passwords.push(newPassword._id);
+                                        collection.save((err, collection) => {
+                                            if (err) {
+                                                res.status(500).json(err);
+                                            } else {
+                                                res.status(201).json(collection);
+                                            }
+                                        });
+                                    }
+                                });
+                            } else {
+                                res.status(409).json({'error':'Cannot have duplicate entries'});
+                            }
                         }
                     });
                 }
