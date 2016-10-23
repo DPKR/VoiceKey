@@ -1,0 +1,13 @@
+import { Component } from '@angular/core';
+import './rxjs-operators';
+
+@Component({
+  selector: 'my-app',
+  template: `
+  <nav-bar></nav-bar>
+  <home-page></home-page>
+  `
+})
+export class AppComponent {
+
+}
