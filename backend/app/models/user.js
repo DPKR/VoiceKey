@@ -4,10 +4,12 @@ var mongoose = require('mongoose'),
     ObjectId = Schema.ObjectId;
 
 var userSchema = new Schema({
-    _id: {
-        type: String,
-        required: true
+    username: {type: String, required: true},
+    password: {type: String, require: true},
+    Microsoft: {
+        id: {type: String, required: true}
     },
+    admin: {type: Boolean, required: true},
     collections: [{ type: ObjectId, ref: 'Collection'}]
 });
 
