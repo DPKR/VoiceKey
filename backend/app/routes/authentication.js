@@ -403,4 +403,50 @@ router.post('/user/collection/:name/password', (req, res) => {
     }
 });
 
+router.delete('/user/collection', (req, res) => {
+    if (req.decoded) {
+        var collectionName = req.body.name;
+        var userID = req.decoded._doc.Microsoft.id;
+        if (!collectionName || collectionName.lenth == 0) {
+            res.status(400).json({'error':'collectionName required from body'});
+            return;
+        }
+        User
+        .findOne({'Microsoft.id':userID})
+        .populate('collections')
+        .exec((err, user) => {
+            if (err) {
+                res.status(500).json(err);
+            } else {
+                var thisCollection = user.collections.find((collection) => {
+                    return collection.name == collectionName;
+                });
+                if (!thisCollection) {
+                    res.status(400).json({'error':'No such collection exists'});
+                } else {
+                    var collectionID = thisCollection._id;
+                    user.collections.splice(user.collections.indexOf(collectionID), 1);
+                    Collection.findOneAndRemove(collection, (err, collection) => {
+                        user.save((err, user) => {
+                            if (err) {
+                                res.status(500).json(err);
+                            } else {
+                                var passwordList = thisCollection.passwords;
+                                passwordList.forEach((passsword) => {
+                                    Password.findOneAndRemove({'_id':password}, (err, password) => {
+                                        if (err) {
+                                            res.status(500).json(err);
+                                        }
+                                    }).then(() => {
+                                        res.status(201).json(collection);
+                                    });
+                                });
+                            }
+                        });
+                    });
+                }
+            }
+        });
+    }
+});
 module.exports = router;
