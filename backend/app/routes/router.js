@@ -1,6 +1,4 @@
 var express = require('express');
-var mongoose = require('mongoose');
-var jwt = require('jsonwebtoken');
 var router = express.Router();
 var userController = require('../controllers/user');
 var collectionController = require('../controllers/collection');

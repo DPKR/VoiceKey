@@ -27,12 +27,14 @@ process.once('SIGUSR2', function() {
     });
 });
 
+// Listening to node processes for failed terminations signals.
 process.on('SIGINT', function() {
     shutdown('app termination', function() {
         process.exit(0);
     });
 });
 
+// specify required files to import (dependencies)
 require('./user');
 require('./collection');
 require('./password');

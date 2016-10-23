@@ -7,13 +7,16 @@ module.exports.getCollection = (req, res) => {
     if (req.decoded) {
         var userID = req.decoded._doc.Microsoft.id;
         var collectionName = req.query.name;
+        // Finds a Microsoft account with the matID and populates collection fields
         User
         .findOne({'Microsoft.id':userID})
         .populate('collections')
         .exec((err, user) => {
+            // Prints error results of server failures
             if (err) {
                 res.status(500).json(err);
             } else {
+                // Retrieves all collection data types associated with the user
                 var collectionList = user.collections;
                 if (!collectionName) {
                     if (!collectionList || collectionList.length == 0) {
@@ -22,6 +25,8 @@ module.exports.getCollection = (req, res) => {
                         res.status(200).json(collectionList);
                     }
                 } else {
+                    // Checks if a collection exists such that collection name matches
+                    // with each collection object
                     var collection = collectionList.find((collection) => {
                         return collection.name == collectionName;
                     });
@@ -39,12 +44,16 @@ module.exports.getCollection = (req, res) => {
 
 module.exports.createNewCollection = (req, res) => {
     if (req.decoded) {
+        // Checks if collectionName is a valid input value.
         var userID = req.decoded._doc.Microsoft.id;
         var collectionName = req.body.collectionName;
         if (!collectionName || collectionName.length == 0) {
             res.status(400).json({'error':'collectionName required in body'});
             return;
         }
+        // Searches for one user Account among User context and finds the first
+        // match where the userID matches the Microsoft ID. The field value collection
+        // for the user object is populated.
         User
         .findOne({'Microsoft.id':userID})
         .populate('collections')
