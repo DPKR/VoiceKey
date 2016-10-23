@@ -192,4 +192,57 @@ router.get('/user/collection', (req, res) => {
     }
 });
 
+router.post('/user/collection', (req, res) => {
+    if (req.decoded) {
+        var userID = req.decoded._doc.Microsoft.id;
+        var collectionName = req.body.collectionName;
+        if (!collectionName || collectionName.length == 0) {
+            res.status(400).json({'error':'collectionName required in body'});
+            return;
+        }
+        User
+        .findOne({'Microsoft.id':userID})
+        .populate('collections')
+        .exec((err, user) => {
+            if (err) {
+                res.status(500).json(err);
+            } else {
+                var collection = user.collections.find((collection) => {
+                    return collection.name == collectionName;
+                });
+                if (!collection) {
+                    var newCollection = new Collection({
+                        'user': user._id,
+                        'name': collectionName
+                    });
+                    user.collections.push(newCollection._id);
+                    newCollection.save((err, collection) => {
+                        if (err) {
+                            res.status(500).json(err);
+                        } else {
+                            user.save((err, user) => {
+                                if (err) {
+                                    res.status(500).json(err);
+                                } else {
+                                    res.status(201).json(collection);
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    res.status(409).json({'error':'Collection already exist.'});
+                }
+            }
+        });
+    }
+});
+
+router.put('/user/collection', (req, res) => {
+    if (req.decoded) {
+        var collectionName = req.body.name;
+        var newCollectionName = req.body.newName;
+        var userID = req.decoded._doc.Microsoft.id;
+    }
+})
+
 module.exports = router;
