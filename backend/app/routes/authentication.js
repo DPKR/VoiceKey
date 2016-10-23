@@ -422,27 +422,32 @@ router.delete('/user/collection', (req, res) => {
                     return collection.name == collectionName;
                 });
                 if (!thisCollection) {
-                    res.status(400).json({'error':'No such collection exists'});
+                    res.status(404).json({'error':'No such collection exists'});
                 } else {
-                    var collectionID = thisCollection._id;
+                    var collectionID = mongoose.Types.ObjectId(thisCollection._id);
                     user.collections.splice(user.collections.indexOf(collectionID), 1);
-                    Collection.findOneAndRemove(collectionID, (err, collection) => {
-                        user.save((err, user) => {
-                            if (err) {
-                                res.status(500).json(err);
-                            } else {
-                                var passwordList = thisCollection.passwords;
-                                passwordList.forEach((password) => {
-                                    Password.findOneAndRemove({'_id':password}, (err, password) => {
-                                        if (err) {
-                                            res.status(500).json(err);
-                                        }
-                                    }).then(() => {
-                                        res.status(201).json(collection);
+                    user.save((err, user) => {
+                        if (err) {
+                            res.status(500).json(err);
+                        } else {
+                            var listOfPasswords;
+                            Collection.where().findOneAndRemove({'_id':collectionID}, (err, collection) => {
+                                if (err) {
+                                    res.status(500).json(err);
+                                } else {
+                                    collection.passwords.forEach((password) => {
+                                        var passID = mongoose.Types.ObjectId(password);
+                                        Password.findOneAndRemove({'_id':password}, (err, password) => {
+                                            if (err) {
+                                                res.status(500).json(err);
+                                            }
+                                        }).then(() => {
+                                            res.status(201).json(null);
+                                        });
                                     });
-                                });
-                            }
-                        });
+                                }
+                            });
+                        }
                     });
                 }
             }
@@ -481,10 +486,8 @@ router.delete('/user/collection/:name/password', (req, res) => {
                 res.status(404).json({'error':'Collection does not exist'});
             } else {
                 Collection.findOne({'_id':collection._id}, function(err, collection) {
-                  console.log(collection);
-                  console.log(passID);
-                  console.log(collection.passwords.indexOf(mongoose.Types.ObjectId(passID)));
-                  collection.update({$pull: {passwords: mongoose.Types.ObjectId(passID)}});
+                  var passIdIndex = collection.passwords.indexOf(mongoose.Types.ObjectId(passID));
+                  collection.passwords.splice(passIdIndex, 1);
                   // avorite.update( {cn: req.params.name}, { $pullAll: {uid: [req.params.deleteUid] } } )
                     // collection.passwords.slice(collection.passwords.indexOf(mongoose.Types.ObjectId(passID)), 1);
                     collection.save((err, collection) => {
