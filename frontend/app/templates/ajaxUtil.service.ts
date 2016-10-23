@@ -13,7 +13,14 @@ export class AjaxUtil {
     return body || { };
   }
 
-  getNewUser(): Observable<any> {
+  saveNewUser(user: string, password : string, MId : string) : Observable<any> {
+    let body = "userID=" + MId + "&username=" + user + "&password=" + password;
+    let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.post('http://localhost:8000/api/v1/user', body, options).map(this.extractData).catch(this.handleError);
+  }
+
+  createNewUser(): Observable<any> {
     let body = {
       "locale":"en-us",
     };

@@ -14,6 +14,7 @@ var app_component_1 = require('./app.component');
 var http_1 = require('@angular/http');
 var homepage_1 = require('./templates/homepage');
 var navbar_1 = require('./templates/navbar');
+var footerbar_1 = require('./templates/footerbar');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -26,7 +27,8 @@ var AppModule = (function () {
             declarations: [
                 app_component_1.AppComponent,
                 homepage_1.HomePage,
-                navbar_1.NavBar
+                navbar_1.NavBar,
+                footerbar_1.FooterBar
             ],
             bootstrap: [app_component_1.AppComponent],
             entryComponents: [],

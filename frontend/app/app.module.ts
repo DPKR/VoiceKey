@@ -4,6 +4,7 @@ import { AppComponent }   from './app.component';
 import { HttpModule } from '@angular/http';
 import { HomePage } from './templates/homepage';
 import { NavBar } from './templates/navbar';
+import { FooterBar } from './templates/footerbar';
 
 @NgModule({
   imports:      [ 
@@ -13,7 +14,8 @@ import { NavBar } from './templates/navbar';
   declarations: [ 
   	AppComponent,
   	HomePage,
-  	NavBar
+  	NavBar,
+    FooterBar
 	 ],
   bootstrap:    [ AppComponent ],
   entryComponents: [
