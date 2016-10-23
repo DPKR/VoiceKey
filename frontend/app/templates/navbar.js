@@ -15,7 +15,7 @@ var NavBar = (function () {
     NavBar = __decorate([
         core_1.Component({
             selector: 'nav-bar',
-            template: "\n  <nav class=\"#7e57c2 deep-purple lighten-1\" style=\"margin-bottom: 1em\">\n    <div class=\"nav-wrapper\">\n      <a href=\"#\" class=\"brand-logo\" style=\"padding-left: 1em\">Voice Key Auth</a>\n      <ul id=\"nav-mobile\" class=\"right hide-on-med-and-down\">\n        <li><a href=\"#\">Home</a></li>\n      </ul>\n    </div>\n  </nav>\n  "
+            template: "\n  <nav class=\"#7e57c2 deep-purple lighten-1\" style=\"margin-bottom: 1em\">\n    <div class=\"nav-wrapper\">\n      <a href=\"#\" class=\"brand-logo\" style=\"padding-left: 1em\">V-Auth</a>\n      <ul id=\"nav-mobile\" class=\"right hide-on-med-and-down\">\n        <li><a href=\"#\">Home</a></li>\n      </ul>\n    </div>\n  </nav>\n  "
         }), 
         __metadata('design:paramtypes', [])
     ], NavBar);
