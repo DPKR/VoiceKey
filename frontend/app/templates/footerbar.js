@@ -9,18 +9,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-require('./rxjs-operators');
-var AppComponent = (function () {
-    function AppComponent() {
+var FooterBar = (function () {
+    function FooterBar() {
     }
-    AppComponent = __decorate([
+    FooterBar = __decorate([
         core_1.Component({
-            selector: 'my-app',
-            template: "\n  <nav-bar></nav-bar>\n  <home-page></home-page>\n  <footer-bar></footer-bar>\n  "
+            selector: 'footer-bar',
+            template: "\n    <footer class=\"page-footer\" class=\"#7e57c2 deep-purple lighten-1\">\n      <div class=\"container\">\n        <div class=\"row\">\n          <div class=\"col l6 s12\">\n            <h5 class=\"white-text\">Voice Authentication App</h5>\n            <p class=\"grey-text text-lighten-4\">Daniel In. Daniel Son. Paul Kim</p>\n          </div>\n        </div>\n      </div>\n      <div class=\"footer-copyright white-text\">\n        <div class=\"container\">\n        \u00A9 2016 Copyright Whatever\n        </div>\n      </div>\n    </footer>\n  "
         }), 
         __metadata('design:paramtypes', [])
-    ], AppComponent);
-    return AppComponent;
+    ], FooterBar);
+    return FooterBar;
 }());
-exports.AppComponent = AppComponent;
-//# sourceMappingURL=app.component.js.map
+exports.FooterBar = FooterBar;
+//# sourceMappingURL=footerbar.js.map

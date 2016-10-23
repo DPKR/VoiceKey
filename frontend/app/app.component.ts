@@ -6,6 +6,7 @@ import './rxjs-operators';
   template: `
   <nav-bar></nav-bar>
   <home-page></home-page>
+  <footer-bar></footer-bar>
   `
 })
 export class AppComponent {
