@@ -280,6 +280,47 @@ router.put('/user/collection', (req, res) => {
     }
 });
 
+router.get('/user/collection/:name/password', (req, res) => {
+    if (req.decoded) {
+        var userID = req.decoded._doc.Microsoft.id;
+        var collectionName = req.params.name;
 
+        if (!collectionName || collectionName.length == 0) {
+            res.status(500).json( {'error':'collectionName required in body'} );
+        }
+
+        User
+        .findOne({'Microsoft.id':userID})
+        .populate('collections')
+        .exec((err, user) => {
+            if (err) {
+                res.status(500).json(err);
+            } else {
+                var collection = user.collections.find((collection) => {
+                    return collection.name == collectionName;
+                });
+
+                if (!collection || collection.length == 0) {
+                    res.status(404).json({'error':'User has no specified Collection.'});
+                } else {
+                    if (!collection.passwords || collection.passwords == 0) {
+                        res.status(404).json({'error':'No passwords stored in specified collection'});
+                    } else {
+                        Collection
+                        .findOne(collection)
+                        .populate('passwords')
+                        .exec((err, collection) => {
+                            if (err) {
+                                res.status(500).json(err);
+                            } else {
+                                res.status(200).json(collection.passwords);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+});
 
 module.exports = router;
