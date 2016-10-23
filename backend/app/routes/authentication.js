@@ -135,11 +135,6 @@ router.get('/user', (req, res) => {
     if (req.decoded) {
         // Get userID passed into the query.
         var userID = req.decoded._doc.Microsoft.id;
-        // Check if the userID was passed to the query.
-        if (!userID || userID.length == 0) {
-            res.status(400).json({'error':'userID required in query.'});
-            return;
-        }
         // Find user based upon the userID provided in the query.
         User
         .findOne({'Microsoft.id':userID})
@@ -158,6 +153,40 @@ router.get('/user', (req, res) => {
                 // Respond with OK status code, since there wasn't an error
                 // and the user was found, and the user json Object.
                 res.status(200).json(user);
+            }
+        });
+    }
+});
+
+router.get('/user/collection', (req, res) => {
+    if (req.decoded) {
+        var userID = req.decoded._doc.Microsoft.id;
+        var collectionName = req.query.name;
+        User
+        .findOne({'Microsoft.id':userID})
+        .populate('collections')
+        .exec((err, user) => {
+            if (err) {
+                res.status(500).json(err);
+            } else {
+                var collectionList = user.collections;
+                if (!collectionName) {
+                    if (!collectionList || collectionList.length == 0) {
+                        res.status(404).json({'error':'Collection not found'});
+                    } else {
+                        res.status(200).json(collectionList);
+                    }
+                } else {
+                    var collection = collectionList.find((collection) => {
+                        return collection.name == collectionName;
+                    });
+
+                    if (!collection) {
+                        res.status(404).json({'error':'Collection not found'});
+                    } else {
+                        res.status(200).json(collection);
+                    }
+                }
             }
         });
     }
