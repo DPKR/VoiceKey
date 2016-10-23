@@ -300,8 +300,8 @@ module.exports = function(app) {
     app.post('/user/:id/collection/:name/password', (req, res) => {
         var userID = req.params.id;
         var collectionName = req.params.name;
-        var user = req.body.username;
-        var hashCode = req.body.hash;
+        var username = req.body.username;
+        var hash = req.body.hash;
 
         if (!userID || userID == 0) {
             res.status(500).json( {'error':'userID required in body'} );
@@ -311,11 +311,11 @@ module.exports = function(app) {
             res.status(500).json( {'error':'collectionName required in body'} );
             return;
         }
-        if (!user || user == 0) {
+        if (!username || username == 0) {
             res.status(500).json( {'error':'username required in body'} );
             return;
         }
-        if (!hashCode || hashCode == 0) {
+        if (!hash || hash == 0) {
             res.status(500).json( {'error':'hash required in body'} );
             return;
         }
@@ -330,42 +330,42 @@ module.exports = function(app) {
             } else if (!user) {
                 res.status(404).json( {'error':'User not found'} );
             } else {
-              var collection = user.collections.find((collection) => {
-                  return collection.name == collectionName;
-              });
+                var collection = user.collections.find((collection) => {
+                    return collection.name == collectionName;
+                });
 
-              if (!collection || collection.length == 0) {
-                  res.status(404).json( {'error':'Collection not found'} );
-              } else {
-                  var password = collection.passwords.find((password) => {
-                      return password.hash == hashCode;
-                  });
+                if (!collection || collection.length == 0) {
+                    res.status(404).json( {'error':'Collection not found'} );
+                } else {
+                    var password = collection.passwords.find((password) => {
+                        return password.hash == hash;
+                    });
 
-                  if (!password) {
-                      var newPassword = new Password({
-                          'username': user,
-                          'hash': hashCode,
-                          'collections': collection._id
-                      });
-                      collection.passwords.push(newPassword._id);
-                      newPassword.save((err, pass) => {
-                          if (err) {
-                              res.status(500).json(err);
-                          } else {
-                              //res.status(201).json(pass);
-                              collection.save((err, collection) => {
-                                  if (err) {
-                                      res.status(500).json(err);
-                                  } else {
-                                      res.status(201).json(collection);
-                                  }
-                              });
-                          }
-                      });
-                  } else {
-                      res.status().json( {'error':'Password already exists in database'} );
-                  }
-              }
+                    if (!password || password.length == 0) {
+                        var newPassword = new Password({
+                            'username': username,
+                            'hash': hash,
+                            'collections': collection._id
+                        });
+                        collection.passwords.push(newPassword._id);
+                        newPassword.save((err, pass) => {
+                            if (err) {
+                                res.status(500).json(err);
+                            } else {
+                                //res.status(201).json(pass);
+                                collection.save((err, collection) => {
+                                    if (err) {
+                                        res.status(500).json(err);
+                                    } else {
+                                        res.status(201).json(collection);
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        res.status(409).json( {'error':'Password already exists in database'} );
+                    }
+                }
             }
         });
 
