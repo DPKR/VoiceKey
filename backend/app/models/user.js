@@ -9,6 +9,7 @@ var userSchema = new Schema({
     Microsoft: {
         id: {type: String, required: true}
     },
+    admin: {type: Boolean, required: true},
     collections: [{ type: ObjectId, ref: 'Collection'}]
 });
 
