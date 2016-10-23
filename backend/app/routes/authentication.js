@@ -323,4 +323,53 @@ router.get('/user/collection/:name/password', (req, res) => {
     }
 });
 
+router.post('/user/collections/:name/password', (req, res) => {
+    if (req.decoded) {
+        var userID = req.decoded._doc.Microsoft.id;
+        var collectionName = req.params.name;
+        var username = req.body.username;
+        var hash = req.body.hash;
+
+        if (!collectionName || collectionName.length == 0) {
+            res.status(400).json( {'error':'collectionName required in body'} );
+            return;
+        }
+        if (!username || username.length == 0) {
+            res.status(400).json( {'error':'username required in body'} );
+            return;
+        }
+        if (!hashCode || hashCode.length == 0) {
+            res.status(400).json( {'error':'hash required in body'} );
+            return;
+        }
+
+        User
+        .findOne({'Microsoft.id':userID})
+        .populate('collections')
+        .exec((err, user) => {
+            if (err) {
+                res.status(500).json(err);
+            } else {
+                var collection = user.collections.find((collection) => {
+                    return collection.name == collectionName;
+                });
+                if (!collection || collection.length == 0) {
+                    res.status(404).json({'error':'Collection not found'});
+                } else {
+                    Collection
+                    .findOne(collection)
+                    .populate('passwords')
+                    .exec((err, collection) => {
+                        if (err) {
+                            res.status(500).json(err);
+                        } else {
+
+                        }
+                    });
+                }
+            }
+        });
+    }
+});
+
 module.exports = router;
