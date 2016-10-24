@@ -1,8 +1,13 @@
 var express = require('express');
+var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var app = express();
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
 // Configuration stuff
 var port = require('./SECRET/config').port || 8080;
@@ -47,5 +52,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
+// Listen to the port provided in the SECRET.
 app.listen(port);
+
 module.exports = app;
