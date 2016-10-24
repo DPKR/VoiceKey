@@ -5,10 +5,26 @@ var router = express.Router();
 var userController = require('../controllers/user');
 var collectionController = require('../controllers/collection');
 var passwordController = require('../controllers/password');
+var SECRET = require('../../SECRET/config').secret;
 
 router.post('/authenticate', userController.authenticateUser);
 router.post('/user', userController.loginUser);
-router.use(require('../controllers/verify'));
+router.use((req, res, next) => {
+    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+    if (!token) {
+        res.status(401).json({'error':'Token required'});
+        return;
+    } else {
+        jwt.verify(token, SECRET, (err, decoded) => {
+            if (err) {
+                return res.status(500).json({'error': 'Failed to Authenticate Token'});
+            } else {
+                req.decoded = decoded;
+                next();
+            }
+        });
+    }
+});
 router.get('/user', userController.getUser);
 router.get('/user/collection', collectionController.getCollection);
 router.post('/user/collection', collectionController.createNewCollection);
