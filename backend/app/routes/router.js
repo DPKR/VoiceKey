@@ -5,11 +5,10 @@ var router = express.Router();
 var userController = require('../controllers/user');
 var collectionController = require('../controllers/collection');
 var passwordController = require('../controllers/password');
-var verifyController = require('../controllers/verify');
 
 router.post('/authenticate', userController.authenticateUser);
 router.post('/user', userController.loginUser);
-router.use(verifyController);
+router.use(require('../controllers/verify'));
 router.get('/user', userController.getUser);
 router.get('/user/collection', collectionController.getCollection);
 router.post('/user/collection', collectionController.createNewCollection);

@@ -1,22 +1,17 @@
 var express = require('express');
-// var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var cors = require('cors');
 var app = express();
 
 // Configuration stuff
 var port = require('./SECRET/config').port || 8080;
 require('./app/models/db.js');
 
-app.use(cors());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-require('./app/routes/microsoft')(app);
 
 var router = require('./app/routes/router');
 
